@@ -1,0 +1,12 @@
+[package]
+name = "mbtaupsert"
+version = "0.1.0"
+authors = ["Andi Wang <andi@materialize.io>"]
+edition = "2018"
+
+[dependencies]
+futures = "0.3"
+getopts = "0.2"
+json = "0.12.4"
+rdkafka = { git = "https://github.com/fede1024/rust-rdkafka.git", features = ["cmake-build"] }
+reqwest = { version = "0.10.4", features = ["native-tls-vendored"] }
