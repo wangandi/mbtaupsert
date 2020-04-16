@@ -3,6 +3,8 @@
 In this demo, we use live MBTA data to recreate the experience of going from stop A to stop B
 via the MBTA subway system.
 
+Note: Until MaterializeInc/materialize#2646 or MaterializeInc/materialize#2647 is merged, you need to run this off of the PR branches and not master.
+
 ## Setup
 
 It is assumed that base streams have been set up according to [mbta-setup.md](/doc/mbta-setup.md) and base views have already been created in Materialize according to [mbta-reference.md](/doc/mbta-reference.md).
@@ -131,9 +133,7 @@ Then you can calculate travel time using this join query using two copies of `en
 
 ```
 SELECT
-departure_time, min(arrival_time) as arrival_time FROM
-(SELECT
-max(r1.departure_time) as departure_time, og2.arrival_time 
+r1.departure_time as departure_time, og2.arrival_time, r1.route_id as leg1_route, r1.headsign as leg1_headsign, r2.stop_name change_at, og1.route_id as leg1_route, og1.headsign as leg2_headsign  
 FROM enriched_red_pred r1, enriched_red_pred r2, enriched_og_pred og1, enriched_og_pred og2
 WHERE r1.trip_id = r2.trip_id 
 AND r1.stop_name='Kendall/MIT'
@@ -143,14 +143,8 @@ AND og2.stop_name='North Station'
 AND og1.stop_sequence < og2.stop_sequence 
 AND og1.trip_id = og2.trip_id 
 AND (r2.arrival_time + INTERVAL '2' MINUTE) < og1.departure_time
-group by og2.arrival_time)
-group by departure_time
 order by arrival_time;
 ```
-
-The reason the query has the two aggregations is because there are multiple combinations of routes that would result in arriving in North Station at the same time. For example, it could be that no Orange Line train left from Downtown Crossing until after two Red Line trains arrived. Likewise, it is possible for multiple arrival times to correspond to a single departure time, and in that case, we only care about the earliest arrival time corresponding to a particular departure time. 
-
-#TODO: add information about where to change lines to the above query.
 
 Once again, you can check the results with google maps.
 

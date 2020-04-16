@@ -1,5 +1,7 @@
 # Demo of Upsert using MBTA real-time API
 
+Important: you need to download the branch in MaterializeInc/materialize#2646 or MaterializeInc/materialize#2647 for this to work.
+
 ## What is Upsert?
 
 Upsert is a general convention where you send a bunch of records with a key and payload:  
